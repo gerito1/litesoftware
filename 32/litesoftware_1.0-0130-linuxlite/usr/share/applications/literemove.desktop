@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Remove Additional Software
+GenericName=Remove Additional Software
+X-GNOME-FullName=Remove Additional Software
+Comment=A tool to easily remove additional software in Linux Lite
+Exec=sh /usr/scripts/lite-remover
+Icon=aptdaemon-delete
+Terminal=false
+Type=Application
+Categories=System;
+StartupNotify=true

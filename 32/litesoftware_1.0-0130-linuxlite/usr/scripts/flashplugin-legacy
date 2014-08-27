@@ -1,0 +1,58 @@
+#!/bin/bash
+#-------------------------------------------
+# Description: Linux Lite Installer Dialogue
+# Author: Jerry Bezencon 2014
+# Website: https://www.linuxliteos.com
+#-------------------------------------------
+
+# Main window dialogue.
+ INSTALLER_TITLE="Flash Plugin Legacy Installer
+-----------------------------------------------------------------------------------------------------
+This version of flash is for older computers that are non-SSE2 compatible.
+Open a terminal and type in: cat /proc/cpuinfo
+Read the line 'flags' and search for 'sse2'. If it is not there then this
+package is for you, in that case, please uninstall 'flashplugin-installer'
+before proceeding with this install. If it is there, then you do not need this package.
+
+This Adobe Flash Player plugin will only work with Firefox.
+In the future a version may be created to support other browsers.
+For now, this is for Firefox only.
+
+WARNING: Installing this Linux Lite package poses a potential security risk to your installation
+as this is an out of date flash plugin. Linux Lite accepts no responsibility for any security
+breach of your computer due to the use of this version of flash.
+-----------------------------------------------------------------------------------------------------
+Click on Yes to continue or No to cancel the installation."
+
+# Call the zenity window icon location.
+ INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
+ APPNAME="Flash Plugin Legacy"
+        
+        zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
+
+                if [ "$?" -eq "0" ]; then
+                        gksudo -g --message 'To install this software your password is required. Enter your password, or press Cancel.' "sudo apt-get install -f flashplugin-legacy --force-yes -y" | zenity --progress --title="Installing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME downloads and installs..." --pulsate --width=400 --auto-close --auto-kill
+
+
+                                if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+                        
+                                        zenity --error \
+                                        --title="Error" --text="$APPNAME could not be installed."
+                                        exit 0
+                                fi
+
+                else
+
+                                        exit 0
+                fi
+
+
+PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished."; echo $?)
+if [ ${PROCEED} -eq 1 ]; then
+	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete."
+	exit;
+else
+	exit
+fi
+
+exit 0
