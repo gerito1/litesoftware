@@ -1,5 +1,5 @@
 litesoftware
-===============
+================
 
 A gui tool to easily install and remove popular software.
 
