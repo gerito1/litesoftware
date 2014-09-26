@@ -1,0 +1,156 @@
+#! /bin/bash
+#--------------------------------------------------------------------------------------------------------
+#Name: Linux Lite Additional Software Install (GUI version)
+# Description: A GUI tool to easily install additional software in Linux Lite.
+# Authors: Misko_2083, Jerry Bezencon
+# Date: September 17th, 2014
+# Website: https://www.linuxliteos.com
+#--------------------------------------------------------------------------------------------------------
+ic="/usr/share/icons/zenity-llcc.png"
+
+selection=$(zenity --window-icon="$ic" --list --checklist --width=880 --height=700 --column="Select" --column="Name" --column="Category" \
+ --column="Description" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." --title="Install Additional Software" --ok-label="Install" --cancel-label="Quit" \
+"1" "Apple Trailers Plugin" "Internet" "Watch Apple trailers in your web browser (Firefox only)" \
+"2" "Chrome Web Browser" "Internet" "Install the Google Chrome web browser" \
+"3" "Chromium Web Browser" "Internet" "Install the open-source alternative to the Google Chrome web browser" \
+"4" "Dropbox" "Internet" "A popular cloud storage application" \
+"5" "File & Folder Search" "Accessories" "Easily locate files and folders in your computer" \
+"6" "Games Pack" "Games" "Comes with Solitaire, Chess, Mahjongg, Mines and Hearts" \
+"7" "Google Talk Browser Plugin" "Internet" "Install this plugin to use Google Hangouts video chat" \
+"8" "iDevices Manager" "Multimedia" "Manage your iDevices with Gtkpod" \
+"9" "Instant Messenger" "Internet" "This will install Pidgin, a multi-protocol Instant Messenging client" \
+"10" "Java Web Applet Plugin" "Internet" "To allow you to view java applets in your web browser" \
+"11" "Netflix" "Multimedia" "A popular streaming tv and movie service (account required)" \
+"12" "Password Manager" "Accessories" "Installs KeePassX, an excellent password manager" \
+"13" "PlayOnLinux" "Cross Platform" "Easily install and use numerous games and apps designed to run with Windows" \
+"14" "Remote Desktop Software" "Internet" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" \
+"15" "Restricted Extras" "Multimedia" "Installs additional codecs and useful file formats that are not shipped by default" \
+"16" "Skype" "Internet" "A popular audio and video chat application" \
+"17" "Teamviewer" "Internet" "Installs Teamviewer Remote Desktop Support software" \
+"18" "Torrent Software" "Internet" "Installs the Deluge Torrent client software" \
+"19" "Video Editing Software" "Multimedia" "Installs Openshot, a simple to use yet powerful video editor for linux" \
+"20" "VirtualBox" "System" "Virtualbox allows you to install other operating systems like Windows from within Linux Lite" \
+"21" "Weather Monitor" "System Tray" "This will install a Weather Monitor Plugin for your tray" \
+"22" "Webcam Software" "Internet" "Guvcview, webcam software for your computer" \
+"23" "Wine" "Cross Platform" "Wine allows you to install and run some Windows programs and games on Linux Lite" \
+"24" "XBMC" "Multimedia" "This will install the XBMC Media Center" )
+
+echo $selection | grep "Apple Trailers Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/trailers 2>/dev/null
+fi
+
+echo $selection | grep "Chrome Web Browser" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/chrome 2>/dev/null
+fi
+
+echo $selection | grep "Chromium Web Browser" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/chromium 2>/dev/null
+fi
+
+echo $selection | grep "Dropbox" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/dropbox 2>/dev/null
+fi
+
+echo $selection | grep "File & Folder Search" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/search 2>/dev/null
+fi
+
+echo $selection | grep "Games Pack" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/games 2>/dev/null
+fi
+
+echo $selection | grep "Google Talk Browser Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/googletalk 2>/dev/null
+fi
+
+echo $selection | grep "iDevices Manager" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/idev 2>/dev/null
+fi
+
+echo $selection | grep "Instant Messenger" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/im 2>/dev/null
+fi
+
+echo $selection | grep "Java Web Applet Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/javaplugin 2>/dev/null
+fi
+
+echo $selection | grep "Netflix" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/netflix 2>/dev/null
+fi
+
+echo $selection | grep "Password Manager" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/keepassx 2>/dev/null
+fi
+
+echo $selection | grep "PlayOnLinux" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/playonlinux 2>/dev/null
+fi
+
+echo $selection | grep "Remote Desktop Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remote 2>/dev/null
+fi
+
+echo $selection | grep "Restricted Extras" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/re 2>/dev/null
+fi
+
+echo $selection | grep "Skype" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/skype 2>/dev/null
+fi
+
+echo $selection | grep "Teamviewer" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/teamviewer 2>/dev/null
+fi
+
+echo $selection | grep "Torrent Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/deluge 2>/dev/null
+fi
+
+echo $selection | grep "Video Editing Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/openshot 2>/dev/null
+fi
+
+echo $selection | grep "VirtualBox" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/virtualbox 2>/dev/null
+fi
+
+echo $selection | grep "Weather Monitor" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/weather 2>/dev/null
+fi
+
+echo $selection | grep "Webcam Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/guvcview 2>/dev/null
+fi
+
+echo $selection | grep "Wine" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/wine 2>/dev/null
+fi
+
+echo $selection | grep "XBMC" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/xbmc 2>/dev/null
+fi

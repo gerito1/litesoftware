@@ -1,0 +1,157 @@
+#!/bin/bash
+#----------------------------------------------------------------------------------------------------
+# Name: Linux Lite Remove Additional Software
+# Description: A tool to easily remove additional software in Linux Lite.
+# Authors: Misko_2083, Jerry Bezencon
+# Date: September 18th, 2014
+# Website: https://www.linuxliteos.com
+#----------------------------------------------------------------------------------------------------
+
+ic="/usr/share/icons/zenity-llcc.png"
+selection=$(zenity --window-icon="$ic" --list --checklist --width=880 --height=700 --column="Select" --column="Name" --column="Category" \
+ --column="Description" --text="Select the programs you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." --title="Remove Additional Software" --ok-label="Remove" --cancel-label="Quit" \
+"1" "Apple Trailers Plugin" "Internet" "Remove the Apple trailers plugin from your web browser (Firefox only)" \
+"2" "Chrome Web Browser" "Internet" "Remove the Google Chrome web browser" \
+"3" "Chromium Web Browser" "Internet" "Remove the open-source alternative to the Google Chrome web browser" \
+"4" "Dropbox" "Internet" "Remove Dropbox, a popular cloud storage application" \
+"5" "File & Folder Search" "Accessories" "Remove Catfish, a locate files and folders application" \
+"6" "Games Pack" "Games" "Remove Solitaire, Chess, Mahjongg, Mines and Hearts" \
+"7" "Google Talk Browser Plugin" "Internet" "Remove this plugin for Google Hangouts video chat" \
+"8" "iDevices Manager" "Multimedia" "Remove Gtkpod, the iDevices manager" \
+"9" "Instant Messenger" "Internet" "Remove Pidgin, a multi-protocol Instant Messenging client" \
+"10" "Java Web Applet Plugin" "Internet" "Remove the java applets plugin from your web browser" \
+"11" "Netflix" "Multimedia" "Remove Netflix, a popular streaming tv and movie service" \
+"12" "Password Manager" "Accessories" "Remove KeePassX, the password manager" \
+"13" "PlayOnLinux" "Cross Platform" "Remove PlayOnLinux, games and apps designed to run with Windows" \
+"14" "Remote Desktop Software" "Internet" "Remove Remmina, Remote Desktop Client for Windows (RDP) and VNC Servers" \
+"15" "Restricted Extras" "Multimedia" "Remove additional codecs and useful file formats that are not shipped by default" \
+"16" "Skype" "Internet" "Remove Skype, a popular audio and video chat application" \
+"17" "Teamviewer" "Internet" "Remove Teamviewer Remote Desktop Support software" \
+"18" "Torrent Software" "Internet" "Remove Deluge, torrent client software" \
+"19" "Video Editing Software" "Multimedia" "Remove Openshot, a simple to use yet powerful video editor for linux" \
+"20" "VirtualBox" "System" "Remove Virtualbox, install other operating systems like Windows from within Linux Lite" \
+"21" "Weather Monitor" "System Tray" "Remove the Weather Monitor Plugin from your tray" \
+"22" "Webcam Software" "Internet" "Remove Guvcview, webcam software for your computer" \
+"23" "Wine" "Cross Platform" "Remove Wine, run Windows programs and games on Linux Lite" \
+"24" "XBMC" "Multimedia" "Remove the XBMC Media Center" )
+
+
+echo $selection | grep "Apple Trailers Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/trailers 2>/dev/null
+fi
+
+echo $selection | grep "Chrome Web Browser" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/chrome 2>/dev/null
+fi
+
+echo $selection | grep "Chromium Web Browser" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/chromium 2>/dev/null
+fi
+
+echo $selection | grep "Dropbox" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/dropbox 2>/dev/null
+fi
+
+echo $selection | grep "File & Folder Search" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts//remove/search 2>/dev/null
+fi
+
+echo $selection | grep "Games Pack" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/games 2>/dev/null
+fi
+
+echo $selection | grep "Google Talk Browser Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/googletalk 2>/dev/null
+fi
+
+echo $selection | grep "iDevices Manager" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/idev 2>/dev/null
+fi
+
+echo $selection | grep "Instant Messenger" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/im 2>/dev/null
+fi
+
+echo $selection | grep "Java Web Applet Plugin" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/javaplugin 2>/dev/null
+fi
+
+echo $selection | grep "Netflix" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/netflix 2>/dev/null
+fi
+
+echo $selection | grep "Password Manager" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/keepassx 2>/dev/null
+fi
+
+echo $selection | grep "PlayOnLinux" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/playonlinux 2>/dev/null
+fi
+
+echo $selection | grep "Remote Desktop Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/remote 2>/dev/null
+fi
+
+echo $selection | grep "Restricted Extras" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/re 2>/dev/null
+fi
+
+echo $selection | grep "Skype" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/skype 2>/dev/null
+fi
+
+echo $selection | grep "Teamviewer" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/teamviewer 2>/dev/null
+fi
+
+echo $selection | grep "Torrent Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/deluge 2>/dev/null
+fi
+
+echo $selection | grep "Video Editing Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/openshot 2>/dev/null
+fi
+
+echo $selection | grep "VirtualBox" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/virtualbox 2>/dev/null
+fi
+
+echo $selection | grep "Weather Monitor" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/weather 2>/dev/null
+fi
+
+echo $selection | grep "Webcam Software" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/guvcview 2>/dev/null
+fi
+
+echo $selection | grep "Wine" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/wine 2>/dev/null
+fi
+
+echo $selection | grep "XBMC" > /dev/null
+if [ $? = 0 ];then
+/usr/scripts/remove/xbmc 2>/dev/null
+fi

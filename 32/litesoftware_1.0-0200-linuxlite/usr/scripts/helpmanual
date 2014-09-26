@@ -1,0 +1,3 @@
+#! /bin/bash
+
+xdg-open "file:///usr/share/doc/litemanual/software.html"
