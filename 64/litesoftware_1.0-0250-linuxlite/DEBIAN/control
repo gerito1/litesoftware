@@ -1,0 +1,12 @@
+Package: lite-software
+Version: 1.0-0250-linuxlite
+Essential: yes
+Architecture: amd64
+Maintainer: Jerry Bezencon <valtam@linuxliteos.com>
+Installed-Size: 1200
+Depends: apt, zenity, gksu
+Section: base
+Priority: required
+Homepage: http://www.linuxliteos.com
+Description: Linux Lite Install Additional Software Dialogue
+ A tool to easily install and remove additional software in Linux Lite.

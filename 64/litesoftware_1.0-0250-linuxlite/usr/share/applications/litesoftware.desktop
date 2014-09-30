@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Install Additional Software
+GenericName=Install Additional Software
+X-GNOME-FullName=Install Additional Software
+Comment=A tool to easily install additional software in Linux Lite
+Exec=gksudo /usr/scripts/lite-software
+Icon=aptdaemon-add
+Terminal=false
+Type=Application
+Categories=System;
+StartupNotify=true
