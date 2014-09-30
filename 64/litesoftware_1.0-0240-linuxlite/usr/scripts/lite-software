@@ -112,7 +112,7 @@ else
 fi
 
 test_extras1=(`apt-cache policy ubuntu-restricted-extras | grep "Installed:"` )
-test_extras2=(`apt-cache policy libavcodec-extra | grep "Installed:"` )
+test_extras2=(`apt-cache policy libavcodec-extra-54 | grep "Installed:"` )
 if [ "${test_extras1[1]}" != "(none)" ] && [ "${test_extras2[1]}" != "(none)" ];then
   extras=("FALSE" "Restricted Extras" "Multimedia" "Installed" "Installs additional codecs and useful file formats that are not shipped by default" )
 else
