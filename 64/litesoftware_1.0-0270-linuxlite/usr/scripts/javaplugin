@@ -20,7 +20,13 @@ Click on Yes to continue or No to cancel the installation."
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Java Applet Plugin"
-        
+
+        test_icedtea=(`apt-cache policy icedtea-7-plugin | grep "Installed:"`)
+		if [ "${test_icedtea[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
@@ -39,9 +45,9 @@ Click on Yes to continue or No to cancel the installation."
                                         exit 0
                 fi
 
-PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\n\nPlease resart your browser."; echo $?)
+PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\nThe $APPNAME has been installed to your web browser."; echo $?)
 if [ ${PROCEED} -eq 1 ]; then
-	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete.\n\n The $APPNAME has been installed to your web browser"
+	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete.\n\nThe $APPNAME has been installed to your web browser"
 	exit;
 else
 	exit &

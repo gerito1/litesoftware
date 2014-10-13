@@ -21,6 +21,12 @@ Click on Yes to continue or No to cancel the removal process."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Steam"
         
+        test_steam64=(`apt-cache policy steam-launcher | grep "Installed:"`)
+		if [ "${test_steam64[1]}" == "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already removed."
+ 			exit 0
+		fi
+
         zenity --question --title="$APPNAME Remover" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then

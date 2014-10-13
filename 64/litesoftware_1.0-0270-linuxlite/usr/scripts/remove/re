@@ -20,11 +20,19 @@ Click on Yes to continue or No to cancel the removal process."
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Restricted Extras"
-        
+     
+	test_extras1=(`apt-cache policy ubuntu-restricted-extras | grep "Installed:"` )
+	test_extras2=(`apt-cache policy libavcodec-extra-54 | grep "Installed:"` )
+		if [ "${test_extras1[1]}" == "(none)" ] && [ "${test_extras2[1]}" == "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME are already removed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Remover" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
-                        sudo apt-get remove -f ubuntu-restricted-extras libavcodec-extra --force-yes -y | zenity --progress --title="Removing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME uninstalls..." --pulsate --width=400 --auto-close --auto-kill
+                        sudo apt-get remove -f ubuntu-restricted-extras libavcodec-extra-54 --force-yes -y | zenity --progress --title="Removing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME uninstalls..." --pulsate --width=400 --auto-close --auto-kill
 
 
                                 if [ "${PIPESTATUS[0]}" -ne "0" ]; then

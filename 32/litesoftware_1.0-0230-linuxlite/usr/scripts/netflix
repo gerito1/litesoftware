@@ -28,13 +28,13 @@ Click on Yes to continue or No to cancel the installation."
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Netflix"
-        
-	test_netflix=(`apt-cache policy google-chrome-stable | grep "Installed:"`)
-		if [ "${test_netflix[1]}" != "(none)" ];then
+	test_netflix1=(`apt-cache policy google-chrome-stable | grep "Installed:"`)
+	test_netflix2=(`apt-cache policy libnss3 | grep "Installed:"`)
+		if [ "${test_netflix1[1]}" != "(none)" ] && [ "${test_netflix2[1]}" != "(none)" ];then
 			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
  			exit 0
 		fi
-        
+
 
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
