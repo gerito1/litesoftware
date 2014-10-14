@@ -22,6 +22,17 @@ Click on Yes to continue or No to cancel the installation."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Games Pack"
         
+		test_gamespack1=(`apt-cache policy aisleriot | grep "Installed:"`)
+		test_gamespack2=(`apt-cache policy mahjongg | grep "Installed:"`)
+		test_gamespack3=(`apt-cache policy glchess | grep "Installed:"`)
+		test_gamespack4=(`apt-cache policy gnomine | grep "Installed:"`)
+		test_gamespack5=(`apt-cache policy gnome-hearts | grep "Installed:"`)
+		if [ "${test_gamespack1[1]}" != "(none)" ] && [ "${gamespack2[1]}" != "(none)" ] && [ "${test_gamespack3[1]}" != "(none)" ] && [ "${test_gamespack4[1]}" != "(none)" ] && [ "${test_gamespack5[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
@@ -40,9 +51,10 @@ Click on Yes to continue or No to cancel the installation."
                                         exit 0
                 fi
 
-PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\nThe $APPNAME is located in Menu, Games."; echo $?)
+
+PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\n$APPNAME is located in Menu, Games."; echo $?)
 if [ ${PROCEED} -eq 1 ]; then
-	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete.\n\nThe $APPNAME is located in Menu, Games"
+	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete.\n\n$APPNAME is located in Menu, Games"
 	exit;
 else
 	exit &

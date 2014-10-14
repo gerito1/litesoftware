@@ -21,6 +21,15 @@ Click on Yes to continue or No to cancel the removal process."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Openshot"
         
+	test_videoedit1=(`apt-cache policy openshot | grep "Installed:"`)
+	test_videoedit2=(`apt-cache policy blender | grep "Installed:"`)
+	test_videoedit3=(`apt-cache policy libavformat-extra-54 | grep "Installed:"`)
+		if [ "${test_videoedit1[1]}" == "(none)" ] && [ "${test_videoedit2[1]}" == "(none)" ] && [ "${test_videoedit3[1]}" == "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already removed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Remover" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then

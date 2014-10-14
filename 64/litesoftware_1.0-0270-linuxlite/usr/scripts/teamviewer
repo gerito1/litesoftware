@@ -22,6 +22,13 @@ Click on Yes to continue or No to cancel the installation."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Teamviewer"
         
+	test_teamviewer=(`apt-cache policy teamviewer9:i386 | grep "Installed:"`)
+		if [ "${test_teamviewer[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then

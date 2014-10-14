@@ -21,6 +21,14 @@ Click on Yes to continue or No to cancel the removal process."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Apple Trailers Plugin"
         
+	test_appletrailers1=(`apt-cache policy totem-mozilla | grep "Installed:"`)
+	test_appletrailers2=(`apt-cache policy ubuntu-restricted-extras | grep "Installed:"`)
+		if [ "${test_appletrailers1[1]}" == "(none)" ] && [ "${test_appletrailers2[1]}" == "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already removed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Remover" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then

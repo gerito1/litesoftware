@@ -21,7 +21,14 @@ Click on Yes to continue or No to cancel the installation."
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Guvcview Webcam Software"
-        
+
+	test_guvcview=(`apt-cache policy guvcview | grep "Installed:"`)
+		if [ "${test_guvcview[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then

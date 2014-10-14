@@ -23,6 +23,13 @@ Click on Yes to continue or No to cancel the installation."
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
  APPNAME="Remmina"
         
+	test_remmina=(`apt-cache policy remmina | grep "Installed:"`)
+		if [ "${test_remmina[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
+
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
@@ -40,7 +47,6 @@ Click on Yes to continue or No to cancel the installation."
 
                                         exit 0
                 fi
-
 
 PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\n$APPNAME is located in Menu, Internet."; echo $?)
 if [ ${PROCEED} -eq 1 ]; then
