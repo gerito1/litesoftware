@@ -1,0 +1,56 @@
+#!/bin/bash
+#-------------------------------------------
+# Description: Linux Lite Installer Dialogue
+# Author: Jerry Bezencon 2014
+# Website: https://www.linuxliteos.com
+#-------------------------------------------
+
+# Main window dialogue.
+ INSTALLER_TITLE="Java Applet Plugin Installer
+-----------------------------------------------------------------------------------------------------
+This will install the Java Applet Plugin for your web browser.
+
+When you click on Yes, this window will close and the install will begin.
+The install time will vary based on your internet connection and computer.
+Support is available from - http://openjdk.java.net/
+
+-----------------------------------------------------------------------------------------------------
+Click on Yes to continue or No to cancel the installation."
+
+# Call the zenity window icon location.
+ INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
+ APPNAME="Java Applet Plugin"
+
+        test_icedtea=(`apt-cache policy icedtea-7-plugin | grep "Installed:"`)
+		if [ "${test_icedtea[1]}" != "(none)" ];then
+			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
+ 			exit 0
+		fi
+
+        zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
+
+                if [ "$?" -eq "0" ]; then
+                        sudo apt-get install -f icedtea-7-plugin --force-yes -y | zenity --progress --title="Installing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME downloads and installs..." --pulsate --width=400 --auto-close --auto-kill
+
+
+                                if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+                        
+                                        zenity --error \
+                                        --title="Error" --text="$APPNAME could not be installed."
+                                        exit 0
+                                fi
+
+                else
+
+                                        exit 0
+                fi
+
+PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\nThe $APPNAME has been installed to your web browser."; echo $?)
+if [ ${PROCEED} -eq 1 ]; then
+	zenity --info --title="Finished" --window-icon="${INSTALL_ICON}" --text="Install Complete.\n\nThe $APPNAME has been installed to your web browser"
+	exit;
+else
+	exit &
+fi
+
+exit 0
