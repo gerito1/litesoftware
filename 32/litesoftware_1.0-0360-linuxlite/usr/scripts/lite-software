@@ -1,0 +1,379 @@
+#! /bin/bash
+#--------------------------------------------------------------------------------------------------------
+# Name: Linux Lite Additional Software Install
+# Version: 1.0-0360
+# Description: A GUI tool to easily install additional software in Linux Lite.
+# Authors: Misko_2083, Jerry Bezencon
+# Date: December 7th, 2014
+# Website: https://www.linuxliteos.com
+#--------------------------------------------------------------------------------------------------------
+
+# Ensure multi-language support
+export LANG=C
+
+# Kill off any package managers that may be running
+if [ "$(pidof synaptic)" ] 
+then
+   sudo killall -9 synaptic 
+else
+   echo""
+fi
+
+if [ -z "$(pgrep gdebi-gtk)" ]
+then
+   echo ""
+else
+   killall -9 gdebi-gtk
+fi
+
+# Check if the package cache information exists
+apt-cache policy | grep "500" 2>&1 >/dev/null
+if [ "${PIPESTATUS[1]}" -ne "0" ]; then
+	if zenity --question --title="Update" --text="Package information lists must be updated.\nDo you want to continue?"; then
+ 		stdbuf -oL /bin/bash \-c '(sudo apt-get update \-y )' 2>&1 |
+		stdbuf -oL sed  's/^/#/g' |
+		zenity --progress --title="Updating package information..." --pulsate --width=600 --auto-close
+			 if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+                                                zenity --error --title="Error" --text="Updating package lists has failed."
+                                                exit
+                         fi
+	else
+		exit;
+	fi
+fi
+
+test_appletrailers1=(`dpkg -l "totem-mozilla" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+test_appletrailers2=(`dpkg -l "ubuntu-restricted-extras" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_appletrailers1[@]}" -eq "0" ] && [ "${test_appletrailers2[@]}" -eq "0" ];then
+  appletrailers=("FALSE" "Apple Trailers Plugin" "Internet" "Installed" "Watch Apple trailers in your web browser (Firefox only)" )
+else
+  appletrailers=("FALSE" "Apple Trailers Plugin" "Internet" "Not Installed" "Watch Apple trailers in your web browser (Firefox only)" )
+fi
+
+test_chrome=(`dpkg -l "google-chrome-stable" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_chrome[@]}" -eq "0" ];then
+  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Installed" "Install the Google Chrome web browser" )
+else
+  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Not Installed" "Install the Google Chrome web browser" )
+fi
+
+test_chromium=(`dpkg -l "chromium-browser" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_chromium[@]}" -eq "0" ];then
+  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Installed" "Install the open-source alternative to the Google Chrome web browser" )
+else
+  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Not Installed" "Install the open-source alternative to the Google Chrome web browser" )
+fi
+
+test_dropbox=(`dpkg -l "nautilus-dropbox" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_dropbox[@]}" -eq "0" ];then
+  dropbox=("FALSE" "Dropbox" "Internet" "Installed" "A popular cloud storage application" )
+else
+  dropbox=("FALSE" "Dropbox" "Internet" "Not Installed" "A popular cloud storage application" )
+fi
+
+test_catfish=(`dpkg -l "catfish" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_catfish[@]}" -eq "0" ];then
+  catfish=("FALSE" "File & Folder Search" "Accessories" "Installed" "Easily locate files and folders in your computer" )
+else
+  catfish=("FALSE" "File & Folder Search" "Accessories" "Not Installed" "Easily locate files and folders in your computer" )
+fi
+
+test_gamespack1=(`apt-cache policy aisleriot | grep "Installed:"`)
+test_gamespack2=(`apt-cache policy gnome-mahjongg | grep "Installed:"`)
+test_gamespack3=(`apt-cache policy gnome-chess | grep "Installed:"`)
+test_gamespack4=(`apt-cache policy gnome-mines | grep "Installed:"`)
+test_gamespack5=(`apt-cache policy gnome-hearts | grep "Installed:"`)
+if [ "${test_gamespack1[@]}" -eq "0" ] && [ "${test_gamespack2[@]}" -eq "0" ] && [ "${test_gamespack3[@]}" -eq "0" ] && [ "${test_gamespack4[@]}" -eq "0" ] && [ "${test_gamespack5[@]}" -eq "0" ];then
+  gamespack=("FALSE" "Games Pack" "Games" "Installed" "Comes with Solitaire, Chess, Mahjongg, Mines and Hearts" )
+else
+  gamespack=("FALSE" "Games Pack" "Games" "Not Installed" "Comes with Solitaire, Chess, Mahjongg, Mines and Hearts" )
+fi
+
+test_googletalk=(`dpkg -l "google-talkplugin" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_googletalk[@]}" -eq "0" ];then
+  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Installed" "Install this plugin to use Google Hangouts video chat" )
+else
+  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Not Installed" "Install this plugin to use Google Hangouts video chat" )
+fi
+
+test_gtkpod=(`dpkg -l "gtkpod" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_gtkpod[@]}" -eq "0" ];then
+  idevices=("FALSE" "iDevices Manager" "Multimedia" "Installed" "Manage your iDevices with Gtkpod" )
+else
+  idevices=("FALSE" "iDevices Manager" "Multimedia" "Not Installed" "Manage your iDevices with Gtkpod" )
+fi
+
+test_pidgin=(`dpkg -l "pidgin" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_pidgin[@]}" -eq "0" ];then
+  imessenger=("FALSE" "Instant Messenger" "Internet" "Installed" "This will install Pidgin, a multi-protocol Instant Messenging client" )
+else
+  imessenger=("FALSE" "Instant Messenger" "Internet" "Not Installed" "This will install Pidgin, a multi-protocol Instant Messenging client" )
+fi
+
+test_icedtea=(`dpkg -l "icedtea-7-plugin" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_icedtea[@]}" -eq "0" ];then
+  javaplugin=("FALSE" "Java Web Applet Plugin" "Internet" "Installed" "To allow you to view java applets in your web browser" )
+else
+  javaplugin=("FALSE" "Java Web Applet Plugin" "Internet" "Not Installed" "To allow you to view java applets in your web browser" )
+fi
+
+test_clementine=(`dpkg -l "clementine" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_clementine[@]}" -eq "0" ];then
+  clementine=("FALSE" "Music Player" "Multimedia" "Installed" "Clementine is a modern music player and library organizer" )
+else
+  clementine=("FALSE" "Music Player" "Multimedia" "Not Installed" "Clementine is a modern music player and library organizer" )
+fi
+
+test_keepassx=(`dpkg -l "keepassx" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_keepassx[@]}" -eq "0" ];then
+  passmgr=("FALSE" "Password Manager" "Accessories" "Installed" "Installs KeePassX, an excellent password manager" )
+else
+  passmgr=("FALSE" "Password Manager" "Accessories" "Not Installed" "Installs KeePassX, an excellent password manager" )
+fi
+
+test_playonlinux=(`dpkg -l "playonlinux" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_playonlinux[@]}" -eq "0" ];then
+  playonlinux=("FALSE" "PlayOnLinux" "Cross Platform" "Installed" "Easily install and use numerous games and apps designed to run with Windows" )
+else
+  playonlinux=("FALSE" "PlayOnLinux" "Cross Platform" "Not Installed" "Easily install and use numerous games and apps designed to run with Windows" )
+fi
+
+test_remmina=(`dpkg -l "remmina" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_remmina[@]}" -eq "0" ];then
+  remote=("FALSE" "Remote Desktop Software" "Internet" "Installed" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
+else
+  remote=("FALSE" "Remote Desktop Software" "Internet" "Not Installed" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
+fi
+
+test_extras1=(`dpkg -l "ubuntu-restricted-extras" 2>&1 | grep "^.i" >/dev/null; echo $?` )
+test_extras2=(`dpkg -l "libavcodec-extra" 2>&1 | grep "^.i" >/dev/null; echo $?` )
+if [ "${test_extras1[@]}" -eq "0" ] && [ "${test_extras2[@]}" -eq "0" ];then
+  extras=("FALSE" "Restricted Extras" "Multimedia" "Installed" "Installs additional codecs and useful file formats that are not shipped by default" )
+else
+  extras=("FALSE" "Restricted Extras" "Multimedia" "Not Installed" "Installs additional codecs and useful file formats that are not shipped by default" )
+fi
+
+test_skype=(`dpkg -l "skype" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_skype[@]}" -eq "0" ];then
+  skype=("FALSE" "Skype" "Internet" "Installed" "A popular audio and video chat application" )
+else
+  skype=("FALSE" "Skype" "Internet" "Not Installed" "A popular audio and video chat application" )
+fi
+
+test_teamviewer=(`dpkg -l "teamviewer" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_teamviewer[@]}" -eq "0" ];then
+  teamviewer=("FALSE" "Teamviewer" "Internet" "Installed" "Installs Teamviewer Remote Desktop Support software" )
+else
+  teamviewer=("FALSE" "Teamviewer" "Internet" "Not Installed" "Installs Teamviewer Remote Desktop Support software" )
+fi
+
+test_deluge=(`dpkg -l "deluge" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_deluge[@]}" -eq "0" ];then
+  torrent=("FALSE" "Torrent Software" "Internet" "Installed" "Installs the Deluge Torrent client software" )
+else
+  torrent=("FALSE" "Torrent Software" "Internet" "Not Installed" "Installs the Deluge Torrent client software" )
+fi
+
+test_videoedit1=(`dpkg -l "openshot" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+test_videoedit2=(`dpkg -l "blender" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+test_videoedit3=(`dpkg -l "libavformat-extra-54" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_videoedit1[@]}" -eq "0" ] && [ "${test_videoedit2[@]}" -eq "0" ] && [ "${test_videoedit3[@]}" -eq "0" ];then
+  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Installed" "Installs Openshot, a simple to use yet powerful video editor for linux" )
+else
+  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Not Installed" "Installs Openshot, a simple to use yet powerful video editor for linux" )
+fi
+
+test_virtualbox=(`dpkg -l "virtualbox" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_virtualbox[@]}" -eq "0" ];then
+  vbox=("FALSE" "VirtualBox" "System" "Installed" "Virtualbox - install other operating systems like Windows from within Linux Lite" )
+else
+  vbox=("FALSE" "VirtualBox" "System" "Not Installed" "Virtualbox - install other operating systems like Windows from within Linux Lite" )
+fi
+
+test_weather=(`dpkg -l "xfce4-weather-plugin" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_weather[@]}" -eq "0" ];then
+  weather=("FALSE" "Weather Monitor" "System Tray" "Installed" "This will install a Weather Monitor Plugin for your tray" )
+else
+  weather=("FALSE" "Weather Monitor" "System Tray" "Not Installed" "This will install a Weather Monitor Plugin for your tray" )
+fi
+
+test_guvcview=(`dpkg -l "guvcview" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_guvcview[@]}" -eq "0" ];then
+  guvcview=("FALSE" "Webcam Software" "Internet" "Installed" "Guvcview, webcam software for your computer" )
+else
+  guvcview=("FALSE" "Webcam Software" "Internet" "Not Installed" "Guvcview, webcam software for your computer" )
+fi
+
+test_wine=(`dpkg -l "wine1.7" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_wine[@]}" -eq "0" ];then
+  wine=("FALSE" "Wine" "Cross Platform" "Installed" "Wine - install and run some Windows programs and games on Linux Lite" )
+else
+  wine=("FALSE" "Wine" "Cross Platform" "Not Installed" "Wine - install and run some Windows programs and games on Linux Lite" )
+fi
+
+test_xbmc=(`dpkg -l "xbmc" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_xbmc[@]}" -eq "0" ];then
+  xbmc=("FALSE" "XBMC" "Multimedia" "Installed" "This will install the XBMC Media Center" )
+else
+  xbmc=("FALSE" "XBMC" "Multimedia" "Not Installed" "This will install the XBMC Media Center" )
+fi
+
+ic="/usr/share/icons/zenity-llcc.png"
+selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=700 --column="Select" --column="Name" --column="Category" --column="Status" \
+  --column="Description" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." --title="Install Additional Software" --ok-label="Install" --cancel-label="Quit" \
+  "${appletrailers[@]}" \
+  "${googlechromebr[@]}" \
+  "${chromiumbr[@]}" \
+  "${dropbox[@]}" \
+  "${catfish[@]}" \
+  "${gamespack[@]}" \
+  "${googletalk[@]}" \
+  "${idevices[@]}" \
+  "${imessenger[@]}" \
+  "${javaplugin[@]}" \
+  "${clementine[@]}" \
+  "${passmgr[@]}" \
+  "${playonlinux[@]}" \
+  "${remote[@]}" \
+  "${extras[@]}" \
+  "${skype[@]}" \
+  "${teamviewer[@]}" \
+  "${torrent[@]}" \
+  "${videoedit[@]}" \
+  "${vbox[@]}" \
+  "${weather[@]}" \
+  "${guvcview[@]}" \
+  "${wine[@]}" \
+"${xbmc[@]}" )
+
+# If Quit is clicked then exit
+if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+  exit 0
+fi
+
+# check if anything is selected
+echo $selection | grep '[a-zA-Z0-9]'
+if [ "${PIPESTATUS[1]}" -ne "0" ]; then
+  zenity --info --title='Install Additional Software' --text='Nothing was selected for installation.'
+  exit 0
+fi
+
+echo $selection | grep "Apple Trailers Plugin" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/trailers 2>/dev/null
+fi
+
+echo $selection | grep "Chrome Web Browser" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/chrome 2>/dev/null
+fi
+
+echo $selection | grep "Chromium Web Browser" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/chromium 2>/dev/null
+fi
+
+echo $selection | grep "Dropbox" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/dropbox 2>/dev/null
+fi
+
+echo $selection | grep "File & Folder Search" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/search 2>/dev/null
+fi
+
+echo $selection | grep "Games Pack" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/games 2>/dev/null
+fi
+
+echo $selection | grep "Google Talk Browser Plugin" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/googletalk 2>/dev/null
+fi
+
+echo $selection | grep "iDevices Manager" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/idev 2>/dev/null
+fi
+
+echo $selection | grep "Instant Messenger" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/im 2>/dev/null
+fi
+
+echo $selection | grep "Java Web Applet Plugin" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/javaplugin 2>/dev/null
+fi
+
+echo $selection | grep "Music Player" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/clementine 2>/dev/null
+fi
+
+echo $selection | grep "Password Manager" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/keepassx 2>/dev/null
+fi
+
+echo $selection | grep "PlayOnLinux" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/playonlinux 2>/dev/null
+fi
+
+echo $selection | grep "Remote Desktop Software" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/remote 2>/dev/null
+fi
+
+echo $selection | grep "Restricted Extras" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/re 2>/dev/null
+fi
+
+echo $selection | grep "Skype" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/skype 2>/dev/null
+fi
+
+echo $selection | grep "Teamviewer" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/teamviewer 2>/dev/null
+fi
+
+echo $selection | grep "Torrent Software" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/deluge 2>/dev/null
+fi
+
+echo $selection | grep "Video Editing Software" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/openshot 2>/dev/null
+fi
+
+echo $selection | grep "VirtualBox" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/virtualbox 2>/dev/null
+fi
+
+echo $selection | grep "Weather Monitor" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/weather 2>/dev/null
+fi
+
+echo $selection | grep "Webcam Software" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/guvcview 2>/dev/null
+fi
+
+echo $selection | grep "Wine" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/wine 2>/dev/null
+fi
+
+echo $selection | grep "XBMC" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/xbmc 2>/dev/null
+fi
