@@ -1,7 +1,7 @@
 Package: lite-software
-Version: 1.0-0400-linuxlite
+Version: 1.0-0370-linuxlite
 Essential: yes
-Architecture: amd64
+Architecture: i386
 Maintainer: Jerry Bezencon <valtam@linuxliteos.com>
 Installed-Size: 1200
 Depends: apt, zenity, gksu

@@ -9,9 +9,9 @@
 export LANG=C
 
 # Main window dialogue.
- INSTALLER_TITLE="XBMC Media Center Remover
+ INSTALLER_TITLE="Kodi Media Center Remover
 -----------------------------------------------------------------------------------------------------
-This will remove the XBMC Media Center.
+This will remove the Kodi Media Center.
 
 Please make sure the application has been closed before you proceed.
 
@@ -22,18 +22,20 @@ Click on Yes to continue or No to cancel the removal process."
 
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
- APPNAME="XBMC"
+ APPNAME="Kodi"
 
-	test_xbmc=(`apt-cache policy xbmc | grep "Installed:"`)
-		if [ "${test_xbmc[1]}" == "(none)" ];then  
+	test_kodi=(`dpkg -l "kodi" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+		if [ "${test_kodi[@]}" -eq "1" ];then
 			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already removed."
  			exit 0
 		fi
 
+
         zenity --question --title="$APPNAME Remover" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
-                        sudo apt-get remove -f xbmc --force-yes -y | zenity --progress --title="Removing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME uninstalls..." --pulsate --width=400 --auto-close --auto-kill
+                        sudo apt-get remove -f kodi --force-yes -y | zenity --progress --title="Removing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME uninstalls..." --pulsate --width=400 --auto-close --auto-kill
+
 
                                 if [ "${PIPESTATUS[0]}" -ne "0" ]; then
                         
@@ -46,6 +48,7 @@ Click on Yes to continue or No to cancel the removal process."
 
                                         exit 0
                 fi
+
 
 zenity --info --title="$APPNAME Remover" --window-icon=/usr/share/icons/zenity-llcc.png --text="$APPNAME has been uninstalled."
 

@@ -9,34 +9,32 @@
 export LANG=C
 
 # Main window dialogue.
- INSTALLER_TITLE="XBMC Media Center Installer
+ INSTALLER_TITLE="Kodi Media Center Installer
 -----------------------------------------------------------------------------------------------------
-This will install the XBMC Media Center.
+This will install the Kodi Media Center.
 
 When you click on Yes, this window will close and the install will begin.
 The install time will vary based on your internet connection and computer.
-Support is available from - http://xbmc.org/
+Support is available from - http://www.kodi.tv/
 
-Once installed, XBMC is located in Menu, Multimedia.
+Once installed, Kodi is located in Menu, Multimedia.
 -----------------------------------------------------------------------------------------------------
 Click on Yes to continue or No to cancel the installation."
 
 # Call the zenity window icon location.
  INSTALL_ICON="/usr/share/icons/zenity-llcc.png"
- APPNAME="XBMC"
+ APPNAME="Kodi"
 
-	test_xbmc=(`dpkg -l "xbmc" 2>&1 | grep "^.i" >/dev/null; echo $?`)
-		if [ "${test_xbmc[@]}" -eq "0" ];then
+	test_kodi=(`apt-cache policy kodi | grep "Installed:"`)
+		if [ "${test_kodi[1]}" != "(none)" ];then  
 			zenity --info --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="$APPNAME is already installed."
  			exit 0
 		fi
 
-
         zenity --question --title="$APPNAME Installer" --window-icon="${INSTALL_ICON}" --text="${INSTALLER_TITLE}"
 
                 if [ "$?" -eq "0" ]; then
-                        sudo apt-get install -f xbmc --force-yes -y | zenity --progress --title="Installing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME downloads and installs..." --pulsate --width=400 --auto-close --auto-kill
-
+                        sudo apt-get install -f kodi --force-yes -y | zenity --progress --title="Installing $APPNAME" --window-icon="${INSTALL_ICON}" --text="Please wait whilst $APPNAME downloads and installs..." --pulsate --width=400 --auto-close --auto-kill
 
                                 if [ "${PIPESTATUS[0]}" -ne "0" ]; then
                         
@@ -49,7 +47,6 @@ Click on Yes to continue or No to cancel the installation."
 
                                         exit 0
                 fi
-
 
 PROCEED=$(zenity --info --title="$APPNAME Installer" --window-icon=/usr/share/icons/zenity-llcc.png --text="The installation has finished.\n$APPNAME is located in Menu, Multimedia."; echo $?)
 if [ ${PROCEED} -eq 1 ]; then

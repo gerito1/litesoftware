@@ -1,10 +1,10 @@
 #!/bin/bash
 #----------------------------------------------------------------------------------------------------
 # Name: Linux Lite Remove Additional Software
-# Version: 1.0-0360
+# Version: 1.0-0370
 # Description: A tool to easily remove additional software in Linux Lite.
 # Authors: Misko_2083, Jerry Bezencon
-# Date: December 7th, 2014
+# Date: December 27th, 2014
 # Website: https://www.linuxliteos.com
 #----------------------------------------------------------------------------------------------------
 
@@ -117,6 +117,13 @@ else
   javaplugin=("FALSE" "Java Web Applet Plugin" "Internet" "Not Installed" "To allow you to view java applets in your web browser" )
 fi
 
+test_kodi=(`dpkg -l "kodi" 2>&1 | grep "^.i" >/dev/null; echo $?`)
+if [ "${test_kodi[@]}" -eq "0" ];then
+  kodi=("FALSE" "Kodi" "Multimedia" "Installed" "Kodi Media Center (formerly known as XBMC)" )
+else
+  kodi=("FALSE" "Kodi" "Multimedia" "Not Installed" "Kodi Media Center (formerly known as XBMC)" )
+fi
+
 test_clementine=(`dpkg -l "clementine" 2>&1 | grep "^.i" >/dev/null; echo $?`)
 if [ "${test_clementine[@]}" -eq "0" ];then
   clementine=("FALSE" "Music Player" "Multimedia" "Installed" "Clementine is a modern music player and library organizer" )
@@ -211,15 +218,8 @@ else
   wine=("FALSE" "Wine" "Cross Platform" "Not Installed" "Wine - install and run some Windows programs and games on Linux Lite" )
 fi
 
-test_xbmc=(`dpkg -l "xbmc" 2>&1 | grep "^.i" >/dev/null; echo $?`)
-if [ "${test_xbmc[@]}" -eq "0" ];then
-  xbmc=("FALSE" "XBMC" "Multimedia" "Installed" "XBMC Media Center" )
-else
-  xbmc=("FALSE" "XBMC" "Multimedia" "Not Installed" "XBMC Media Center" )
-fi
-
 ic="/usr/share/icons/zenity-llcc.png"
-selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=700 --column="Select" --column="Name" --column="Category" --column="Status" \
+selection=$(zenity --window-icon="$ic" --list --checklist --width=920 --height=700 --column="Select" --column="Name" --column="Category" --column="Status" \
   --column="Description" --text="Select the programs you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." --title="Remove Additional Software" --ok-label="Remove" --cancel-label="Quit" \
   "${appletrailers[@]}" \
   "${googlechromebr[@]}" \
@@ -231,6 +231,7 @@ selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=7
   "${idevices[@]}" \
   "${imessenger[@]}" \
   "${javaplugin[@]}" \
+  "${kodi[@]}" \
   "${clementine[@]}" \
   "${passmgr[@]}" \
   "${playonlinux[@]}" \
@@ -243,8 +244,7 @@ selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=7
   "${vbox[@]}" \
   "${weather[@]}" \
   "${guvcview[@]}" \
-  "${wine[@]}" \
-"${xbmc[@]}" )
+  "${wine[@]}" )
 
 # If Quit is clicked then exit
 if [ "${PIPESTATUS[0]}" -ne "0" ]; then
@@ -306,6 +306,11 @@ fi
 echo $selection | grep "Java Web Applet Plugin" > /dev/null
 if [ $? = 0 ];then
   /usr/scripts/remove/javaplugin 2>/dev/null
+fi
+
+echo $selection | grep "Kodi" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/remove/kodi 2>/dev/null
 fi
 
 echo $selection | grep "Music Player" > /dev/null
@@ -371,9 +376,4 @@ fi
 echo $selection | grep "Wine" > /dev/null
 if [ $? = 0 ];then
   /usr/scripts/remove/wine 2>/dev/null
-fi
-
-echo $selection | grep "XBMC" > /dev/null
-if [ $? = 0 ];then
-  /usr/scripts/remove/xbmc 2>/dev/null
 fi

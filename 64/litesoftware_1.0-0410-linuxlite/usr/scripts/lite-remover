@@ -1,12 +1,12 @@
-#! /bin/bash
-#--------------------------------------------------------------------------------------------------------
-# Name: Linux Lite Additional Software Install
-# Version: 1.0-0400
-# Description: A GUI tool to easily install additional software in Linux Lite.
+#!/bin/bash
+#----------------------------------------------------------------------------------------------------
+# Name: Linux Lite Remove Additional Software
+# Version: 1.0-0410
+# Description: A tool to easily remove additional software in Linux Lite.
 # Authors: Misko_2083, Jerry Bezencon
 # Date: December 7th, 2014
 # Website: https://www.linuxliteos.com
-#--------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
 
 # Ensure multi-language support
 export LANG=C
@@ -49,16 +49,16 @@ fi
 
 test_chrome=(`apt-cache policy google-chrome-stable | grep "Installed:"`)
 if [ "${test_chrome[1]}" != "(none)" ];then
-  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Installed" "Install the Google Chrome web browser" )
+  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Installed" "Remove the Google Chrome web browser" )
 else
-  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Not Installed" "Install the Google Chrome web browser" )
+  googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "Not Installed" "Remove the Google Chrome web browser" )
 fi
 
 test_chromium=(`apt-cache policy chromium-browser | grep "Installed:"`)
 if [ "${test_chromium[1]}" != "(none)" ];then
-  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Installed" "Install the open-source alternative to the Google Chrome web browser" )
+  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Installed" "Remove the open-source alternative to the Google Chrome web browser" )
 else
-  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Not Installed" "Install the open-source alternative to the Google Chrome web browser" )
+  chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "Not Installed" "Remove the open-source alternative to the Google Chrome web browser" )
 fi
 
 test_dropbox=(`apt-cache policy nautilus-dropbox | grep "Installed:"`)
@@ -88,9 +88,9 @@ fi
 
 test_googletalk=(`apt-cache policy google-talkplugin | grep "Installed:"`)
 if [ "${test_googletalk[1]}" != "(none)" ];then
-  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Installed" "Install this plugin to use Google Hangouts video chat" )
+  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Installed" "Remove this plugin to use Google Hangouts video chat" )
 else
-  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Not Installed" "Install this plugin to use Google Hangouts video chat" )
+  googletalk=("FALSE" "Google Talk Browser Plugin" "Internet" "Not Installed" "Remove this plugin to use Google Hangouts video chat" )
 fi
 
 test_gtkpod=(`apt-cache policy gtkpod | grep "Installed:"`)
@@ -102,9 +102,9 @@ fi
 
 test_pidgin=(`apt-cache policy pidgin | grep "Installed:"`)
 if [ "${test_pidgin[1]}" != "(none)" ];then
-  imessenger=("FALSE" "Instant Messenger" "Internet" "Installed" "This will install Pidgin, a multi-protocol Instant Messenging client" )
+  imessenger=("FALSE" "Instant Messenger" "Internet" "Installed" "This will remove Pidgin, a multi-protocol Instant Messenging client" )
 else
-  imessenger=("FALSE" "Instant Messenger" "Internet" "Not Installed" "This will install Pidgin, a multi-protocol Instant Messenging client" )
+  imessenger=("FALSE" "Instant Messenger" "Internet" "Not Installed" "This will remove Pidgin, a multi-protocol Instant Messenging client" )
 fi
 
 test_icedtea=(`apt-cache policy icedtea-7-plugin | grep "Installed:"`)
@@ -112,6 +112,13 @@ if [ "${test_icedtea[1]}" != "(none)" ];then
   javaplugin=("FALSE" "Java Web Applet Plugin" "Internet" "Installed" "To allow you to view java applets in your web browser" )
 else
   javaplugin=("FALSE" "Java Web Applet Plugin" "Internet" "Not Installed" "To allow you to view java applets in your web browser" )
+fi
+
+test_kodi=(`apt-cache policy kodi | grep "Installed:"`)
+if [ "${test_kodi[1]}" != "(none)" ];then
+  kodi=("FALSE" "Kodi" "Multimedia" "Installed" "This will remove the Kodi Media Center (formerly known as XBMC)" )
+else
+  kodi=("FALSE" "Kodi" "Multimedia" "Not Installed" "This will remove the Kodi Media Center (formerly known as XBMC)" )
 fi
 
 test_clementine=(`apt-cache policy clementine | grep "Installed:"`)
@@ -123,9 +130,9 @@ fi
 
 test_keepassx=(`apt-cache policy keepassx | grep "Installed:"`)
 if [ "${test_keepassx[1]}" != "(none)" ];then
-  passmgr=("FALSE" "Password Manager" "Accessories" "Installed" "Installs KeePassX, an excellent password manager" )
+  passmgr=("FALSE" "Password Manager" "Accessories" "Installed" "Remove KeePassX, an excellent password manager" )
 else
-  passmgr=("FALSE" "Password Manager" "Accessories" "Not Installed" "Installs KeePassX, an excellent password manager" )
+  passmgr=("FALSE" "Password Manager" "Accessories" "Not Installed" "Remove KeePassX, an excellent password manager" )
 fi
 
 test_playonlinux=(`apt-cache policy playonlinux | grep "Installed:"`)
@@ -137,17 +144,17 @@ fi
 
 test_remmina=(`apt-cache policy remmina | grep "Installed:"`)
 if [ "${test_remmina[1]}" != "(none)" ];then
-  remote=("FALSE" "Remote Desktop Software" "Internet" "Installed" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
+  remote=("FALSE" "Remote Desktop Software" "Internet" "Installed" "Remove the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
 else
-  remote=("FALSE" "Remote Desktop Software" "Internet" "Not Installed" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
+  remote=("FALSE" "Remote Desktop Software" "Internet" "Not Installed" "Remove the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" )
 fi
 
 test_extras1=(`apt-cache policy ubuntu-restricted-extras | grep "Installed:"` )
 test_extras2=(`apt-cache policy libavcodec-extra-54 | grep "Installed:"` )
 if [ "${test_extras1[1]}" != "(none)" ] && [ "${test_extras2[1]}" != "(none)" ];then
-  extras=("FALSE" "Restricted Extras" "Multimedia" "Installed" "Installs additional codecs and useful file formats that are not shipped by default" )
+  extras=("FALSE" "Restricted Extras" "Multimedia" "Installed" "Remove additional codecs and useful file formats that are not shipped by default" )
 else
-  extras=("FALSE" "Restricted Extras" "Multimedia" "Not Installed" "Installs additional codecs and useful file formats that are not shipped by default" )
+  extras=("FALSE" "Restricted Extras" "Multimedia" "Not Installed" "Remove additional codecs and useful file formats that are not shipped by default" )
 fi
 
 test_skype=(`apt-cache policy skype | grep "Installed:"`)
@@ -166,25 +173,25 @@ fi
 
 test_teamviewer=(`apt-cache policy teamviewer:i386 | grep "Installed:"`)
 if [ "${test_teamviewer[1]}" != "(none)" ];then
-  teamviewer=("FALSE" "Teamviewer" "Internet" "Installed" "Installs Teamviewer Remote Desktop Support software" )
+  teamviewer=("FALSE" "Teamviewer" "Internet" "Installed" "Remove Teamviewer Remote Desktop Support software" )
 else
-  teamviewer=("FALSE" "Teamviewer" "Internet" "Not Installed" "Installs Teamviewer Remote Desktop Support software" )
+  teamviewer=("FALSE" "Teamviewer" "Internet" "Not Installed" "Remove Teamviewer Remote Desktop Support software" )
 fi
 
 test_deluge=(`apt-cache policy deluge | grep "Installed:"`)
 if [ "${test_deluge[1]}" != "(none)" ];then
-  torrent=("FALSE" "Torrent Software" "Internet" "Installed" "Installs the Deluge Torrent client software" )
+  torrent=("FALSE" "Torrent Software" "Internet" "Installed" "Remove the Deluge Torrent client software" )
 else
-  torrent=("FALSE" "Torrent Software" "Internet" "Not Installed" "Installs the Deluge Torrent client software" )
+  torrent=("FALSE" "Torrent Software" "Internet" "Not Installed" "Remove the Deluge Torrent client software" )
 fi
 
 test_videoedit1=(`apt-cache policy openshot | grep "Installed:"`)
 test_videoedit2=(`apt-cache policy blender | grep "Installed:"`)
 test_videoedit3=(`apt-cache policy libavformat-extra-54 | grep "Installed:"`)
 if [ "${test_videoedit1[1]}" != "(none)" ] && [ "${test_videoedit2[1]}" != "(none)" ] && [ "${test_videoedit3[1]}" != "(none)" ];then
-  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Installed" "Installs Openshot, a simple to use yet powerful video editor for linux" )
+  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Installed" "Remove Openshot, a simple to use yet powerful video editor for linux" )
 else
-  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Not Installed" "Installs Openshot, a simple to use yet powerful video editor for linux" )
+  videoedit=("FALSE" "Video Editing Software" "Multimedia" "Not Installed" "Remove Openshot, a simple to use yet powerful video editor for linux" )
 fi
 
 test_virtualbox=(`apt-cache policy virtualbox | grep "Installed:"`)
@@ -196,9 +203,9 @@ fi
 
 test_weather=(`apt-cache policy xfce4-weather-plugin | grep "Installed:"`)
 if [ "${test_weather[1]}" != "(none)" ];then
-  weather=("FALSE" "Weather Monitor" "System Tray" "Installed" "This will install a Weather Monitor Plugin for your tray" )
+  weather=("FALSE" "Weather Monitor" "System Tray" "Installed" "This will remove a Weather Monitor Plugin for your tray" )
 else
-  weather=("FALSE" "Weather Monitor" "System Tray" "Not Installed" "This will install a Weather Monitor Plugin for your tray" )
+  weather=("FALSE" "Weather Monitor" "System Tray" "Not Installed" "This will remove a Weather Monitor Plugin for your tray" )
 fi
 
 test_guvcview=(`apt-cache policy guvcview | grep "Installed:"`)
@@ -215,16 +222,9 @@ else
   wine=("FALSE" "Wine" "Cross Platform" "Not Installed" "Wine - install and run some Windows programs and games on Linux Lite" )
 fi
 
-test_xbmc=(`apt-cache policy xbmc | grep "Installed:"`)
-if [ "${test_xbmc[1]}" != "(none)" ];then
-  xbmc=("FALSE" "XBMC" "Multimedia" "Installed" "This will install the XBMC Media Center" )
-else
-  xbmc=("FALSE" "XBMC" "Multimedia" "Not Installed" "This will install the XBMC Media Center" )
-fi
-
 ic="/usr/share/icons/zenity-llcc.png"
-selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=720 --column="Select" --column="Name" --column="Category" --column="Status" \
-  --column="Description" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." --title="Install Additional Software" --ok-label="Install" --cancel-label="Quit" \
+selection=$(zenity --window-icon="$ic" --list --checklist --width=920 --height=720 --column="Select" --column="Name" --column="Category" --column="Status" \
+  --column="Description" --text="Select the programs you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." --title="Remove Additional Software" --ok-label="Remove" --cancel-label="Quit" \
   "${appletrailers[@]}" \
   "${googlechromebr[@]}" \
   "${chromiumbr[@]}" \
@@ -235,6 +235,7 @@ selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=7
   "${idevices[@]}" \
   "${imessenger[@]}" \
   "${javaplugin[@]}" \
+  "${kodi[@]}" \
   "${clementine[@]}" \
   "${passmgr[@]}" \
   "${playonlinux[@]}" \
@@ -248,8 +249,7 @@ selection=$(zenity --window-icon="$ic" --list --checklist --width=900 --height=7
   "${vbox[@]}" \
   "${weather[@]}" \
   "${guvcview[@]}" \
-  "${wine[@]}" \
-"${xbmc[@]}" )
+  "${wine[@]}" )
 
 # If Quit is clicked then exit
 if [ "${PIPESTATUS[0]}" -ne "0" ]; then
@@ -257,133 +257,133 @@ if [ "${PIPESTATUS[0]}" -ne "0" ]; then
 fi
 
 # check if anything is selected
-echo $selection | grep '[a-zA-Z0-9]'
+echo $selection | grep '[a-zA-Z]'
 if [ "${PIPESTATUS[1]}" -ne "0" ]; then
-  zenity --info --title='Install Additional Software' --text='Nothing was selected for installation.'
+  zenity --info --title='Cleaner' --text='No application was selected for removal.'
   exit 0
 fi
 
 echo $selection | grep "Apple Trailers Plugin" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/trailers 2>/dev/null
+  /usr/scripts/remove/trailers 2>/dev/null
 fi
 
 echo $selection | grep "Chrome Web Browser" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/chrome 2>/dev/null
+  /usr/scripts/remove/chrome 2>/dev/null
 fi
 
 echo $selection | grep "Chromium Web Browser" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/chromium 2>/dev/null
+  /usr/scripts/remove/chromium 2>/dev/null
 fi
 
 echo $selection | grep "Dropbox" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/dropbox 2>/dev/null
+  /usr/scripts/remove/dropbox 2>/dev/null
 fi
 
 echo $selection | grep "File & Folder Search" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/search 2>/dev/null
+  /usr/scripts//remove/search 2>/dev/null
 fi
 
 echo $selection | grep "Games Pack" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/games 2>/dev/null
+  /usr/scripts/remove/games 2>/dev/null
 fi
 
 echo $selection | grep "Google Talk Browser Plugin" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/googletalk 2>/dev/null
+  /usr/scripts/remove/googletalk 2>/dev/null
 fi
 
 echo $selection | grep "iDevices Manager" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/idev 2>/dev/null
+  /usr/scripts/remove/idev 2>/dev/null
 fi
 
 echo $selection | grep "Instant Messenger" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/im 2>/dev/null
+  /usr/scripts/remove/im 2>/dev/null
 fi
 
 echo $selection | grep "Java Web Applet Plugin" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/javaplugin 2>/dev/null
+  /usr/scripts/remove/javaplugin 2>/dev/null
+fi
+
+echo $selection | grep "Kodi" > /dev/null
+if [ $? = 0 ];then
+  /usr/scripts/remove/kodi 2>/dev/null
 fi
 
 echo $selection | grep "Music Player" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/clementine 2>/dev/null
+  /usr/scripts/remove/clementine 2>/dev/null
 fi
 
 echo $selection | grep "Password Manager" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/keepassx 2>/dev/null
+  /usr/scripts/remove/keepassx 2>/dev/null
 fi
 
 echo $selection | grep "PlayOnLinux" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/playonlinux 2>/dev/null
+  /usr/scripts/remove/playonlinux 2>/dev/null
 fi
 
 echo $selection | grep "Remote Desktop Software" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/remote 2>/dev/null
+  /usr/scripts/remove/remote 2>/dev/null
 fi
 
 echo $selection | grep "Restricted Extras" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/re 2>/dev/null
+  /usr/scripts/remove/re 2>/dev/null
 fi
 
 echo $selection | grep "Skype" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/skype 2>/dev/null
+  /usr/scripts/remove/skype 2>/dev/null
 fi
 
 echo $selection | grep "Steam" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/steam64 2>/dev/null
+  /usr/scripts/remove/steam64 2>/dev/null
 fi
 
 echo $selection | grep "Teamviewer" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/teamviewer 2>/dev/null
+  /usr/scripts/remove/teamviewer 2>/dev/null
 fi
 
 echo $selection | grep "Torrent Software" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/deluge 2>/dev/null
+  /usr/scripts/remove/deluge 2>/dev/null
 fi
 
 echo $selection | grep "Video Editing Software" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/openshot 2>/dev/null
+  /usr/scripts/remove/openshot 2>/dev/null
 fi
 
 echo $selection | grep "VirtualBox" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/virtualbox 2>/dev/null
+  /usr/scripts/remove/virtualbox 2>/dev/null
 fi
 
 echo $selection | grep "Weather Monitor" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/weather 2>/dev/null
+  /usr/scripts/remove/weather 2>/dev/null
 fi
 
 echo $selection | grep "Webcam Software" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/guvcview 2>/dev/null
+  /usr/scripts/remove/guvcview 2>/dev/null
 fi
 
 echo $selection | grep "Wine" > /dev/null
 if [ $? = 0 ];then
-  /usr/scripts/wine 2>/dev/null
-fi
-
-echo $selection | grep "XBMC" > /dev/null
-if [ $? = 0 ];then
-  /usr/scripts/xbmc 2>/dev/null
+  /usr/scripts/remove/wine 2>/dev/null
 fi
