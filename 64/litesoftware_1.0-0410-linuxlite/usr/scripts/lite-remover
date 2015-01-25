@@ -11,19 +11,15 @@
 # Ensure multi-language support
 export LANG=C
 
-# Kill off any package managers that may be running
-if [ "$(pidof synaptic)" ] 
+# Ask to kill off any package managers that may be running or just exit
+if [ "$(pidof synaptic gdebi-gtk)" ]
 then
-   sudo killall -9 synaptic 
-else
-   echo""
-fi
-
-if [ -z "$(pgrep gdebi-gtk)" ]
-then
-   echo ""
-else
-   killall -9 gdebi-gtk
+   if [ -z `$(zenity --question --ok-label="Yes" --cancel-label="No" --text="A package manager is still running. You want to close it?")` ]
+   then
+       sudo killall -9 synaptic gdebi-gtk
+   else
+       exit
+   fi
 fi
 
 test_appletrailers1=(`apt-cache policy totem-mozilla | grep "Installed:"`)
