@@ -40,8 +40,8 @@ prepare(){
 
 # Ask to kill off any package managers that may be running or just exit
 pkg_manager_check(){
-  if [ "$(pidof synaptic gdebi-gtk)" ]; then
-    if [ -z `$(zenity --question --ok-label="Yes" --cancel-label="No" --text="A package manager is still running. You want to close it?")` ]; then
+  if [[ "$(pidof synaptic)"||"$(pgrep gdebi-gtk)" ]]; then
+    if zenity --question --ok-label="Yes" --cancel-label="No" --text="A package manager is still running. You want to close it?"; then
       sudo killall -9 synaptic gdebi-gtk
     else
       exit 0
@@ -281,7 +281,7 @@ pkg_manager_check
 #The main loop
 while (true); do
   ACTION=$(zenity --width=250 --height=180 --list --radiolist --text="Choose a task" \
-    --title="Lite-Software manager" --column "Choice" --column "Action" --column "Code Action" --hide-column=3\
+    --title="Lite-Software manager" --column "Choice" --column "Action" --column "Code Action" --hide-column=3 \
     --print-column=3 --cancel-label="Quit" TRUE "Install software" 1 FALSE "Remove software" 2 FALSE "Exit" 3)
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
     exit 0
