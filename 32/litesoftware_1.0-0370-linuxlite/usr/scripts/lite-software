@@ -1,7 +1,7 @@
 #! /bin/bash
 #--------------------------------------------------------------------------------------------------------
 # Name: Linux Lite Additional Software Install
-# Version: 1.01
+# Version: 1.01a
 # Description: A GUI tool to easily install and remove additional software in Linux Lite.
 # Authors: Misko_2083, Jerry Bezencon, gerito1
 # Date: January 27th, 2015
@@ -116,9 +116,7 @@ get_pkg_status(){
   result="Installed"
   for PKG in  $@
   do
-    #echo "testing $PKG"
     TEST_PKG=(`apt-cache policy $PKG | grep "Installed:"`)
-    #echo $TEST_PKG
     if [ "${TEST_PKG[1]}" == "(none)" ];then
       result="Not Installed"
       break
@@ -178,8 +176,8 @@ install_menu(){
   ic="/usr/share/icons/zenity-llcc.png"
   selection=$(for element in ${soft_list[*]}
     do
-      el=$element[@]                          #grab the whole row
-      printf  '%s\n' "${!el}"                 #print every element in the row separated with a newline
+      row=$element[@]                          #grab the whole row
+      printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
     done | zenity --window-icon="$ic" --list --checklist --width=920 --height=720 --print-column=2,6,7 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." \
       --title="Install Additional Software" --ok-label="Install" --hide-column=6,7 )
@@ -229,11 +227,13 @@ remove_menu(){
   selection=$(for element in ${soft_list[*]}
     do
       pkg_status=$element[3]
+
+      #Only list Installed applications
       if [ "${!pkg_status}" == "Not Installed" ]; then
         continue;
       fi
-      el=$element[@]                          #grab the whole row
-      printf  '%s\n' "${!el}"                 #print every element in the row separated with a newline
+      row=$element[@]                          #grab the whole row
+      printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
     done | zenity --window-icon="$ic" --list --checklist --width=920 --height=720 --print-column=2,6 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." \
       --title="Remove Additional Software" --ok-label="Remove" --hide-column=6,7 )
