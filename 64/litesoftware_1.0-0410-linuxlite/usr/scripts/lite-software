@@ -51,12 +51,12 @@ pkg_manager_check(){
 
 
 #--------------------------------------------------------------------------------------------------------
-# soft_list is the list of package aliases to check/install/remove 
+# soft_list is the list of package aliases to check/install/remove
 # Consist in a list descibing aspect for every package
 # package_alias=( "element 0" "element 1" "element 2" "element 3" "element 4" "element 5" "element 6")
 # element 0: TRUE\FALSE for being selected
 # element 1: The Application name ie: Google Chrome, iDevices Manager
-# element 2: The category which belongs to (one only) ie:  Internet, Multimedia 
+# element 2: The category which belongs to (one only) ie:  Internet, Multimedia
 # element 3: Status of the package ie: Installed, Not Installed
 # element 4: Description of the package ie: "Easily locate files and folders in your computer", "Clementine is a modern music player and library organizer"
 # element 5: List of packages needed to provide the application ie: "aisleriot gnome-mahjongg gnome-chess gnome-mines gnome-hearts"
