@@ -87,7 +87,7 @@ soft_list=(appletrailers
   guvcview
   wine )
 
-appletrailers=("FALSE" "Apple Trailers Plugin" "Internet" "" "Watch Apple trailers in your web browser (Firefox only)" "totem-mozilla" "ubuntu-restricted-extras" )
+appletrailers=("FALSE" "Apple Trailers Plugin" "Internet" "" "Watch Apple trailers in your web browser (Firefox only)" "totem-mozilla totem-common ubuntu-restricted-extras" "totem" )
 googlechromebr=("FALSE" "Chrome Web Browser" "Internet" "" "Install the Google Chrome web browser" "google-chrome-stable" "" )
 chromiumbr=("FALSE" "Chromium Web Browser" "Internet" "" "Install the open-source alternative to the Google Chrome web browser" "chromium-browser" "" )
 dropbox=("FALSE" "Dropbox" "Internet" "" "A popular cloud storage application" "nautilus-dropbox" "" )
@@ -103,9 +103,9 @@ passmgr=("FALSE" "Password Manager" "Accessories" "" "Installs KeePassX, an exce
 playonlinux=("FALSE" "PlayOnLinux" "Cross Platform" "" "Easily install and use numerous games and apps designed to run with Windows" "playonlinux" "" )
 remote=("FALSE" "Remote Desktop Software" "Internet" "" "Installs the Remmina Remote Desktop Client for Windows (RDP) and VNC Servers" "remmina" "" )
 extras=("FALSE" "Restricted Extras" "Multimedia" "" "Installs additional codecs and useful file formats that are not shipped by default" "ubuntu-restricted-extras" "libavcodec-extra-54" )
-skype=("FALSE" "Skype" "Internet" "" "A popular audio and video chat application" "skype" "" )
+skype=("FALSE" "Skype" "Internet" "" "A popular audio and video chat application" "skype-bin" "skype" )
 teamviewer=("FALSE" "Teamviewer" "Internet" "" "Installs Teamviewer Remote Desktop Support software" "teamviewer" "" )
-torrent=("FALSE" "Torrent Software" "Internet" "" "Installs the Deluge Torrent client software" "deluge" "" )
+torrent=("FALSE" "Torrent Software" "Internet" "" "Installs the Deluge Torrent client software" "deluge-common" "deluge" )
 videoedit=("FALSE" "Video Editing Software" "Multimedia" "" "Installs Openshot, a simple to use yet powerful video editor for linux" "openshot blender" "libavformat-extra-54")
 vbox=("FALSE" "VirtualBox" "System" "" "Virtualbox - install other operating systems like Windows from within Linux Lite" "virtualbox" "" )
 weather=("FALSE" "Weather Monitor" "System Tray" "" "This will install a Weather Monitor Plugin for your tray" "xfce4-weather-plugin" "" )
@@ -293,3 +293,5 @@ while (true); do
     esac
   fi
 done
+
+exit 0
