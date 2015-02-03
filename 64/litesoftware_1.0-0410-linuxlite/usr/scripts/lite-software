@@ -17,7 +17,7 @@ prepare(){
   if [ "${PIPESTATUS[1]}" -ne "0" ]; then
     if zenity --question --title="Update" --text="Package information lists must be updated.\nDo you want to continue?"; then
       TOTALREPOS=$(cat /etc/apt/sources.list | grep '^deb' -c) #total of repositories registered this is aproximated
-      sudo apt-get update | awk '/^Ign|^Get/{count++} FNR {printf ("%d%c", count, "\n"); fflush(stdout)}'\
+      sudo apt-get update | awk '/^Ign|^Get/{count++} FNR {printf ("%d%c", count, "\n"); fflush(stdout)}' \
         | while IFS='\n' read -r NUMREPOS
           do
             #I don't know how to extract the right values but this gives a good aproximation
@@ -145,7 +145,7 @@ check_installed(){
 install_pkgs(){
   declare -a pkg_arr=("${!1}")
 
-  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^\(Reading/ {print 100; fflush(stdout)} /^(Preparing|Unpacking|Selecting|Processing|Setting)/ {print "#", $0; fflush(stdout)}' \
+  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^Fetched/ {print 100;fflush(stdout)} /^(Preparing|Unpacking|Selecting|Processing|Setting|Downloading)/ {print "#", $0; fflush(stdout)}' \
     | ( zenity --progress --text="Downloading package(s)...\nThis may take a while." --title="Please wait" --percentage=0 --auto-close ; zenity --progress --text="Installing and configuring packages...\nThis may take a while." --title="Please wait"  --pulsate --auto-close )
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
     zenity --notification --window-icon="warning" --text="The installation failed. The package(s) could not be installed." & \
