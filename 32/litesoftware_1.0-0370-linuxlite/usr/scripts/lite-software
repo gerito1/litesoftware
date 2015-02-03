@@ -146,11 +146,9 @@ install_pkgs(){
   sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^Fetched/ {print 100;fflush(stdout)} /^(Preparing|Unpacking|Selecting|Processing|Setting|Downloading)/ {print "#", $0; fflush(stdout)}' \
     | ( zenity --progress --text="Downloading package(s)...\nThis may take a while." --title="Please wait" --percentage=0 --auto-close ; zenity --progress --text="Installing and configuring packages...\nThis may take a while." --title="Please wait"  --pulsate --auto-close )
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
-    zenity --notification --window-icon="warning" --text="The installation failed. The package(s) could not be installed." & \
     zenity --error --title="Error" --text="The package(s) could not be installed."
     return
   else
-    zenity --notification --window-icon="info" --text="The installation was successful. The package(s) were installed." & \
     zenity --info --title="Success" --text="The package(s) were succefully installed."
   fi
 }
@@ -161,11 +159,9 @@ remove_pkgs(){
   sudo apt-get remove -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=0; pkg=0}  /upgraded/ {total=$6 } /^Removing/ {print "#", $0;pkg+=1;print int((pkg - 1) * 100 / total); fflush(stdout)}' \
     | zenity --progress --text="Removing package(s)...\nThis may take a while." --title="Please wait" --percentage=0 --auto-close
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
-  zenity --notification --window-icon="warning" --text="The software removal failed. The package(s) could not be uninstalled."  & \
-  zenity --error --title="Error" --text="The package(s) could not be removed."
+    zenity --error --title="Error" --text="The package(s) could not be removed."
     return
   else
-    zenity --notification --window-icon="info" --text="The  software removal was successful. The package(s) were uninstalled." & \
     zenity --info --title="Success" --text="The package(s) were succefully removed."
   fi
 }
