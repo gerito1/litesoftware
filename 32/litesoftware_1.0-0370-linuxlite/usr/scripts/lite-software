@@ -143,7 +143,7 @@ check_installed(){
 install_pkgs(){
   declare -a pkg_arr=("${!1}")
 
-  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^Fetched/ {print 100;fflush(stdout)} /^(Preparing|Unpacking|Selecting|Processing|Setting|Downloading)/ {print "#", $0; fflush(stdout)}' \
+  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1;end_download=0} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^\(Reading / {if (end_download==0){print 100;fflush(stdout);end_download=1}} /^(Preparing|Unpacking|Selecting|Processing|Setting|Downloading)/ {print "#", $0; fflush(stdout)}' \
     | ( zenity --progress --text="Downloading package(s)...\nThis may take a while." --title="Please wait" --percentage=0 --auto-close ; zenity --progress --text="Installing and configuring packages...\nThis may take a while." --title="Please wait"  --pulsate --auto-close )
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
     zenity --error --title="Error" --text="The package(s) could not be installed."
