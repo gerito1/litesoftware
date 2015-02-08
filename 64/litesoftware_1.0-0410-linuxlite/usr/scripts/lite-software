@@ -8,6 +8,8 @@
 # Website: https://www.linuxliteos.com
 #--------------------------------------------------------------------------------------------------------
 
+ic="/usr/share/icons/zenity-llcc.png"
+
 # Ensure multi-language support
 export LANG=C
 
@@ -24,38 +26,26 @@ TMP_LOG=/tmp/lite-software.log
 
 #Check if apt-cache was built and ask for update if needed
 prepare(){
-  apt-cache policy | grep "500" 2>&1 >/dev/null
-  if [ "${PIPESTATUS[1]}" -ne "0" ]; then
-    if zenity --question --title="Update" --text="Package information lists must be updated.\nDo you want to continue?"; then
-      TOTALREPOS=$(cat /etc/apt/sources.list | grep '^deb' -c) #total of repositories registered this is aproximated
-      sudo apt-get update | awk '/^Ign|^Get/{count++} FNR {printf ("%d%c", count, "\n"); fflush(stdout)}' \
-        | while IFS='\n' read -r NUMREPOS
-          do
-            #I don't know how to extract the right values but this gives a good aproximation
-            (( PERCENTAGE = 100 \* ${NUMREPOS} / ${TOTALREPOS} )) #calculating the percentage
-            if (( $PERCENTAGE <= 90 )); then
-              echo "${PERCENTAGE}"
-            else
-              echo '90'
-            fi
-        done | zenity --progress --text="Updating package lists..." --title="Please wait" --percentage=0 --auto-close
-        if [ "${PIPESTATUS[0]}" -ne "0" ]; then
-          zenity --error --title="Error" --text="Updating package lists has failed."
-          log "ERROR: Updating package lists has failed."
-          exit 0
-        fi
-        log "INFO: Package list was updated."
-    else
-        log "INFO: The updating of packages was cancelled by the user"
-        exit
+  if zenity --question --title="Package Updater" --window-icon=$ic --text="We will now fetch the Updates list.\n\nClick Yes to continue or No to abort."; then
+    TOTALREPOS=$(cat /etc/apt/sources.list | grep '^deb' -c) #total of repositories registered this is aproximated
+    sudo apt-get update 2>&1 | awk -v total=$TOTALREPOS '/^Ign|^ Get/{count++;$1=""} FNR { if (total != 0){percentage=int (100*count/total);print (percentage < 90?percentage:90),"\n#",$0 }; fflush(stdout)}' \
+      | zenity --progress --text="Updating package lists..." --window-icon=$ic --title="Updating package - Please wait" --percentage=0 --auto-close --width=600
+    if [ "${PIPESTATUS[0]}" -ne "0" ]; then
+      zenity --error --title="Error" --text="Updating package lists has failed."
+      log "ERROR: Updating package lists has failed."
+      exit 0
     fi
+    log "INFO: Package list was updated."
+  else
+    log "INFO: The updating of packages was cancelled by the user"
+    exit
   fi
 }
 
 # Ask to kill off any package managers that may be running or just exit
 pkg_manager_check(){
   if [[ "$(pidof synaptic)"||"$(pgrep gdebi-gtk)" ]]; then
-    if zenity --question --ok-label="Yes" --cancel-label="No" --text="A package manager is still running. You want to close it?"; then
+    if zenity --question --window-icon=$ic --ok-label="Yes" --cancel-label="No" --text="A package manager is still running. You want to close it?"; then
       sudo killall -9 synaptic gdebi-gtk
     else
       exit 0
@@ -161,7 +151,7 @@ install_pkgs(){
 
   log "INFO: Installation of packages initiated: ${pkg_arr[@]}"
   sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | tee $TMP_LOG | awk ' BEGIN { FS=" "; total=1;end_download=0} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^\(Reading / {if (end_download==0){print 100;fflush(stdout);end_download=1}} /^(Preparing|Unpacking|Selecting|Processing|Setting|Download)/ {print "#", $0; fflush(stdout)}' \
-    | ( zenity --progress --text="Downloading package(s)...\nThis may take a while." --title="Downloading - Please wait" --percentage=0 --auto-close ; zenity --progress --text="Installing and configuring packages...\nThis may take a while." --title="Installation - Please wait"  --pulsate --auto-close )
+    | ( zenity --window-icon=$ic --progress --width=600 --text="Downloading package(s)...\nThis may take a while." --title="Downloading - Please wait" --percentage=0 --auto-close ; zenity --progress --window-icon=$ic --width=600 --text="Installing and configuring packages...\nThis may take a while." --title="Installation - Please wait"  --pulsate --auto-close )
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
     err_msg=$(awk '/^E:/{$1=""; print $0}' $TMP_LOG | tail -n 1)
     log "ERROR:$err_msg"
@@ -176,9 +166,9 @@ install_pkgs(){
 remove_pkgs(){
   declare -a pkg_arr=("${!1}")
 
-log "INFO: Remotion of packages initiated: ${pkg_arr[@]}"
+  log "INFO: Remotion of packages initiated: ${pkg_arr[@]}"
   sudo apt-get remove -f ${pkg_arr[@]} --force-yes -y 2>&1 | tee $TMP_LOG | awk ' BEGIN { FS=" "; total=0; pkg=0}  /upgraded/ {total=$6 } /^Removing/ {print "#", $0;pkg+=1;print int((pkg - 1) * 100 / total); fflush(stdout)}' \
-    | zenity --progress --text="Removing package(s)...\nThis may take a while." --title="Removing Software - Please wait" --percentage=0 --auto-close
+    | zenity --progress --window-icon=$ic --width=600 --text="Removing package(s)...\nThis may take a while." --title="Removing Software - Please wait" --percentage=0 --auto-close
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
     err_msg=$(awk '/^E:/{$1=""; print $0}' $TMP_LOG | tail -n 1)
     log "ERROR:$err_msg"
@@ -193,12 +183,12 @@ log "INFO: Remotion of packages initiated: ${pkg_arr[@]}"
 #The installation menu
 install_menu(){
   check_installed
-  ic="/usr/share/icons/zenity-llcc.png"
+
   selection=$(for element in ${soft_list[*]}
     do
       row=$element[@]                          #grab the whole row
       printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
-    done | zenity --window-icon="$ic" --list --checklist --width=920 --height=720 --print-column=2,6,7 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
+    done | zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6,7 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." \
       --title="Install Additional Software" --ok-label="Install" --hide-column=6,7 )
 
@@ -230,7 +220,7 @@ install_menu(){
   done
   IFS=$OIFS
 
-  zenity --question --title="Install software" --window-icon="${ic}" --text="The next software is selected for installation:\n $PKGS_NAMES \nDo you want to proceded?"
+  zenity --question --title="Install software" --window-icon=$ic --text="The next software is selected for installation:\n $PKGS_NAMES \nDo you want to proceded?"
   if [ "$?" -eq "0" ]; then
     install_pkgs PKGS[@]
   else
@@ -240,9 +230,7 @@ install_menu(){
 
 #The installation menu
 remove_menu(){
-
   check_installed
-  ic="/usr/share/icons/zenity-llcc.png"
 
   selection=$(for element in ${soft_list[*]}
     do
@@ -254,7 +242,7 @@ remove_menu(){
       fi
       row=$element[@]                          #grab the whole row
       printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
-    done | zenity --window-icon="$ic" --list --checklist --width=920 --height=720 --print-column=2,6 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
+    done | zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." \
       --title="Remove Additional Software" --ok-label="Remove" --hide-column=6,7 )
 
@@ -285,7 +273,7 @@ remove_menu(){
     PKGS=$PKGS${selection_array[$i]}" "
   done
   IFS=$OIFS
-  zenity --question --title="Remove software" --window-icon="${ic}" --text="The next software is selected for removal:\n $PKGS_NAMES \nDo you want to proceded?"
+  zenity --question --title="Remove software" --window-icon=$ic --text="The next software is selected for removal:\n $PKGS_NAMES \n Do you want to proceded?"
   if [ "$?" -eq "0" ]; then
     remove_pkgs PKGS[@]
   else
@@ -298,7 +286,7 @@ prepare
 pkg_manager_check
 #The main loop
 while (true); do
-  ACTION=$(zenity --width=250 --height=180 --list --radiolist --text="Choose a task" \
+  ACTION=$(zenity --window-icon=$ic --width=250 --height=180 --list --radiolist --text="Choose a task" \
     --title="Lite-Software manager" --column "Choice" --column "Action" --column "Code Action" --hide-column=3 \
     --print-column=3 --cancel-label="Quit" TRUE "Install software" 1 FALSE "Remove software" 2 FALSE "Exit" 3)
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
