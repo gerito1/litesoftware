@@ -11,6 +11,17 @@
 # Ensure multi-language support
 export LANG=C
 
+#Set up log facilities
+#Example output: [02/06/15 20:03:12] message input
+LOGFILE=/var/log/lite-software.log
+log(){
+    message="$@"
+    echo '['$(date +%D\ %H:%M:%S)'] '$message >>$LOGFILE
+}
+
+#Log last activities to retrieve errors
+TMP_LOG=/tmp/lite-software.log
+
 #Check if apt-cache was built and ask for update if needed
 prepare(){
   apt-cache policy | grep "500" 2>&1 >/dev/null
@@ -30,9 +41,12 @@ prepare(){
         done | zenity --progress --text="Updating package lists..." --title="Please wait" --percentage=0 --auto-close
         if [ "${PIPESTATUS[0]}" -ne "0" ]; then
           zenity --error --title="Error" --text="Updating package lists has failed."
-            exit 0
+          log "ERROR: Updating package lists has failed."
+          exit 0
         fi
+        log "INFO: Package list was updated."
     else
+        log "INFO: The updating of packages was cancelled by the user"
         exit
     fi
   fi
@@ -145,26 +159,34 @@ check_installed(){
 install_pkgs(){
   declare -a pkg_arr=("${!1}")
 
-  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=1;end_download=0} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^\(Reading / {if (end_download==0){print 100;fflush(stdout);end_download=1}} /^(Preparing|Unpacking|Selecting|Processing|Setting|Downloading)/ {print "#", $0; fflush(stdout)}' \
+  log "INFO: Installation of packages initiated: ${pkg_arr[@]}"
+  sudo apt-get install -f ${pkg_arr[@]} --force-yes -y 2>&1 | tee $TMP_LOG | awk ' BEGIN { FS=" "; total=1;end_download=0} /upgraded/ {total= $1 + $3;FS="[ :]" } /^Get:[[:digit:]]+/ {printf "#Downloading %s %s %s\n",$6,$(NF-1),$NF;print int(($2 - 1) * 100 / total); fflush(stdout)} /^\(Reading / {if (end_download==0){print 100;fflush(stdout);end_download=1}} /^(Preparing|Unpacking|Selecting|Processing|Setting|Download)/ {print "#", $0; fflush(stdout)}' \
     | ( zenity --progress --text="Downloading package(s)...\nThis may take a while." --title="Downloading - Please wait" --percentage=0 --auto-close ; zenity --progress --text="Installing and configuring packages...\nThis may take a while." --title="Installation - Please wait"  --pulsate --auto-close )
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
-    zenity --error --title="Error" --text="The package(s) could not be installed."
+    err_msg=$(awk '/^E:/{$1=""; print $0}' $TMP_LOG | tail -n 1)
+    log "ERROR:$err_msg"
+    zenity --error --title="Error" --text="Error\n$err_msg"
     return
   else
     zenity --info --title="Success" --text="The package(s) were succefully installed."
+    log "INFO: Installation was a success."
   fi
 }
 
 remove_pkgs(){
   declare -a pkg_arr=("${!1}")
 
-  sudo apt-get remove -f ${pkg_arr[@]} --force-yes -y 2>&1 | awk ' BEGIN { FS=" "; total=0; pkg=0}  /upgraded/ {total=$6 } /^Removing/ {print "#", $0;pkg+=1;print int((pkg - 1) * 100 / total); fflush(stdout)}' \
+log "INFO: Remotion of packages initiated: ${pkg_arr[@]}"
+  sudo apt-get remove -f ${pkg_arr[@]} --force-yes -y 2>&1 | tee $TMP_LOG | awk ' BEGIN { FS=" "; total=0; pkg=0}  /upgraded/ {total=$6 } /^Removing/ {print "#", $0;pkg+=1;print int((pkg - 1) * 100 / total); fflush(stdout)}' \
     | zenity --progress --text="Removing package(s)...\nThis may take a while." --title="Removing Software - Please wait" --percentage=0 --auto-close
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
-    zenity --error --title="Error" --text="The package(s) could not be removed."
+    err_msg=$(awk '/^E:/{$1=""; print $0}' $TMP_LOG | tail -n 1)
+    log "ERROR:$err_msg"
+    zenity --error --title="Error" --text="Error\n$err_msg"
     return
   else
     zenity --info --title="Success" --text="The package(s) were succefully removed."
+    log "INFO: Removal was a success."
   fi
 }
 
@@ -208,7 +230,7 @@ install_menu(){
   done
   IFS=$OIFS
 
-  zenity --question --title="Install software" --window-icon="${ic}" --text="The next software is selected for installation:\n $PKGS_NAMES \n Do you want to proceded?"
+  zenity --question --title="Install software" --window-icon="${ic}" --text="The next software is selected for installation:\n $PKGS_NAMES \nDo you want to proceded?"
   if [ "$?" -eq "0" ]; then
     install_pkgs PKGS[@]
   else
@@ -263,7 +285,7 @@ remove_menu(){
     PKGS=$PKGS${selection_array[$i]}" "
   done
   IFS=$OIFS
-  zenity --question --title="Remove software" --window-icon="${ic}" --text="The next software is selected for removal:\n $PKGS_NAMES \n Do you want to proceded?"
+  zenity --question --title="Remove software" --window-icon="${ic}" --text="The next software is selected for removal:\n $PKGS_NAMES \nDo you want to proceded?"
   if [ "$?" -eq "0" ]; then
     remove_pkgs PKGS[@]
   else
