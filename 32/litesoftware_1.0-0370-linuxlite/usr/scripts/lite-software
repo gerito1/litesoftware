@@ -53,7 +53,6 @@ pkg_manager_check(){
   fi
 }
 
-
 #--------------------------------------------------------------------------------------------------------
 # soft_list is the list of package aliases to check/install/remove
 # Consist in a list descibing aspect for every package
@@ -182,13 +181,24 @@ remove_pkgs(){
 install_menu(){
   check_installed
 
-  selection=$(for element in ${soft_list[*]}
+  #Set the IFS, and save the previous
+  OIFS=$IFS
+  IFS='|'
+  collection=$(for element in ${soft_list[*]}
     do
-      row=$element[@]                          #grab the whole row
-      printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
-    done | zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6,7 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
+      pkg_sel=$element[0]
+      pkg_name=$element[1]
+      pkg_category=$element[2]
+      pkg_status=$element[3]
+      pkg_desc=$element[4]
+      pkg_main=$element[5]
+      pkg_opt=$element[6]
+      echo "${!pkg_sel}|${!pkg_name}|${!pkg_category}|${!pkg_status}|${!pkg_desc}|${!pkg_main}|${!pkg_opt} |"
+done )
+  collection_array=(${collection[@]::-1}) #Split the elements
+  selection=$(zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6,7 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to install, then click the Install button. Sort Categories by clicking on the column.\nYou can select multiple programs to install." \
-      --title="Install Additional Software" --ok-label="Install" --hide-column=6,7 )
+      --title="Install Additional Software" --ok-label="Install" --hide-column=6,7  ${collection_array[@]})
 
   # If Cancel is clicked then return to main loop
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
@@ -201,11 +211,8 @@ install_menu(){
     zenity --info --title='Install Additional Software' --text='Nothing was selected for installation.'
     return
   fi
-
-  #Split selection
-  OIFS=$IFS
-  IFS='|'
-  selection_array=($selection)
+ 
+  selection_array=($selection) #Split the array
   PKGS_NAMES=""
   PKGS=""
   for ((i=0; i<${#selection_array[@]}; ++i));
@@ -226,23 +233,33 @@ install_menu(){
   fi
 }
 
-#The installation menu
+#The Removal menu
 remove_menu(){
   check_installed
 
-  selection=$(for element in ${soft_list[*]}
+  #Set the IFS, and save the previous
+  OIFS=$IFS
+  IFS='|'
+
+ collection=$(for element in ${soft_list[*]}
     do
       pkg_status=$element[3]
-
       #Only list Installed applications
       if [ "${!pkg_status}" == "Not Installed" ]; then
         continue;
       fi
-      row=$element[@]                          #grab the whole row
-      printf  '%s\n' "${!row}"                 #print every element in the row separated with a newline
-    done | zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
+      pkg_sel=$element[0]
+      pkg_name=$element[1]
+      pkg_category=$element[2]
+      pkg_desc=$element[4]
+      pkg_main=$element[5]
+      pkg_opt=$element[6]
+      echo "${!pkg_sel}|${!pkg_name}|${!pkg_category}|${!pkg_status}|${!pkg_desc}|${!pkg_main}|${!pkg_opt} |"
+done )
+  collection_array=(${collection[@]::-1}) #Split the elements
+  selection=$(zenity --window-icon=$ic --list --checklist --width=920 --height=720 --print-column=2,6 --separator="| " --column="Select" --column="Name" --column="Category" --column="Status" \
       --column="Description" --column="Packages" --column="Optional Packages" --text="Select the program you wish to remove, then click the Remove button. Sort Categories by clicking on the column.\nYou can select multiple programs to remove." \
-      --title="Remove Additional Software" --ok-label="Remove" --hide-column=6,7 )
+      --title="Remove Additional Software" --ok-label="Remove" --hide-column=6,7 ${collection_array[@]})
 
   # If Cancel is clicked then return to main loop
   if [ "${PIPESTATUS[0]}" -ne "0" ]; then
@@ -256,9 +273,6 @@ remove_menu(){
     return
   fi
 
-  #Split selection
-  OIFS=$IFS
-  IFS='|'
   selection_array=($selection)
   PKGS_NAMES=""
   PKGS=""
